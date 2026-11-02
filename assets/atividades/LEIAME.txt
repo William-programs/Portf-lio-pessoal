@@ -1,0 +1,18 @@
+ARQUIVOS DAS ATIVIDADES
+
+Coloque os arquivos de cada semana na pasta correspondente. Exemplo:
+  assets/atividades/frontend/semana-05/pagina-login.html
+  assets/atividades/frontend/semana-05/captura-tela.png
+  assets/atividades/backend/semana-12/trabalho.zip
+
+- Imagens viram galeria; PDF e HTML ganham botao "Abrir"; todos ganham "Baixar".
+- Um site completo (pasta com index.html) pode ser copiado inteiro: vira botao "Abrir" do projeto.
+- Depois de copiar, rode atualizar-atividades.bat (ou python atualizar-atividades.py)
+  e abra/atualize o index.html.
+- Nao renomeie as pastas semana-NN nem as pastas das disciplinas.
+
+PREVIA DOS SITES
+- Dentro da pasta de cada site (a que tem index.html), salve um print do site com o nome preview.png
+  (ou capa.png, print.png, screenshot.png). Ele aparece como previa na pagina da semana.
+ATIVIDADES TEORICAS (Canva, Word)
+- Exporte como imagem (PNG/JPG) ou PDF e coloque na pasta da semana. Imagem aparece direto; PDF ganha o botao "Ver previa".

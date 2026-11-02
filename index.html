@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portfólio de Programação</title>
+    <meta
+      name="description"
+      content="Portfólio de programação: projetos e atividades do curso técnico em Front-end, Back-end, Banco de Dados e Versionamento."
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="topo">
+      <div class="topo__inner">
+        <a class="marca" href="#/" id="marca" aria-label="Ir para o início">
+          <span
+            class="marca__avatar"
+            id="marca-avatar"
+            aria-hidden="true"
+          ></span>
+          <span class="marca__nome" id="marca-nome"></span>
+        </a>
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          aria-expanded="false"
+          aria-controls="menu"
+          aria-label="Abrir menu"
+        >
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="menu" id="menu" aria-label="Navegação principal">
+          <a href="#/" data-rota="inicio">Início</a>
+          <a href="#/sobre" data-rota="sobre">Sobre mim</a>
+          <a href="#/atividades" data-rota="atividades">Atividades</a>
+          <a href="#/projetos" data-rota="projetos">Projetos</a>
+          <a href="#/progresso" data-rota="progresso">Meu Progresso</a>
+          <a href="#/experiencia" data-rota="experiencia">Experiência</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="conteudo" tabindex="-1"></main>
+
+    <footer class="rodape">
+      <p id="rodape-texto"></p>
+    </footer>
+
+    <noscript
+      ><p style="padding: 2rem; color: #fff">
+        Este portfólio precisa de JavaScript para funcionar.
+      </p></noscript
+    >
+
+    <script src="js/data.js"></script>
+    <script src="js/certificados.js"></script>
+    <script src="js/arquivos-auto.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
