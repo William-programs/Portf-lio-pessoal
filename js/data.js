@@ -4,48 +4,81 @@
    ===================================================================== */
 
 window.PORTFOLIO = {
-
   /* ---------- PERFIL ---------- */
   perfil: {
     nome: "William",
     foto: "assets/foto.jpg", // substitua o arquivo em assets/foto.jpg pela sua foto real
-    fraseImpacto: "Conheça quem sou e os projetos que desenvolvi",
+    fraseImpacto: "Evoluir hoje, construir o futuro de amanhã.",
     // Textos provisórios: edite livremente.
     // Resumo curto usado na página inicial (a trajetória completa fica em "trajetoria").
-    resumo: "Texto provisório: resuma em uma ou duas frases a sua trajetória para a página inicial.",
+    resumo:
+      "Texto provisório: resuma em uma ou duas frases a sua trajetória para a página inicial.",
     interesses: [
-      // "Desenvolvimento web", "Finanças pessoais", ...  (preencha com os seus)
+      "Desenvolvimento de Software",
+      "Desenvolvimento Web",
+      "Back-end",
+      "Inteligência Artificial",
+      "Ciência da Computação",
+      "Tecnologia e Inovação",
     ],
     apresentacao: [
-      "Texto provisório: escreva aqui uma apresentação curta sobre você, em duas ou três frases."
+      "Sou uma pessoa determinada, que reconhece que ainda tem muito a aprender. Busco evoluir constantemente, melhorar a cada dia e desenvolver novas habilidades. Acredito que aprender, adaptar-me às mudanças e enfrentar novos desafios são passos importantes para construir o futuro que desejo.",
     ],
     trajetoria: [
-      "Texto provisório: conte como foi o seu caminho na tecnologia, desde as primeiras atividades do curso técnico até os projetos mais recentes."
+      "Minha trajetória na tecnologia vem sendo construída por meio dos estudos, das atividades do curso técnico e do desenvolvimento de projetos. Durante esse caminho, tive contato com diferentes áreas da programação, como Front-end, Back-end, Banco de Dados e Versionamento. Cada experiência representa uma oportunidade de aprendizado e evolução.",
     ],
+
     aprendizados: [
-      "Texto provisório: liste o que você aprendeu em Front-end.",
-      "Texto provisório: liste o que você aprendeu em Back-end.",
-      "Texto provisório: liste o que você aprendeu em Banco de Dados.",
-      "Texto provisório: liste o que você aprendeu em Versionamento."
+      "Front-end: estudos de desenvolvimento de interfaces utilizando HTML, CSS e JavaScript.",
+      "Back-end: contato com lógica de programação, desenvolvimento de aplicações e funcionamento de servidores.",
+      "Banco de Dados: estudos sobre organização, armazenamento e gerenciamento de informações.",
+      "Versionamento: utilização de Git e GitHub para organizar projetos e acompanhar alterações no código.",
     ],
-    habilidades: ["Front-end", "Back-end", "Banco de Dados", "Versionamento"], // acrescente as suas
-    objetivos: [
-      "Texto provisório: descreva seus objetivos profissionais na área de desenvolvimento de software."
+
+    habilidades: [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "Python",
+      "Git e GitHub",
+      "Banco de Dados",
+      "Lógica de Programação",
+      "Desenvolvimento Web",
     ],
     contatos: [
       // { rotulo: "GitHub", url: "https://github.com/seu-usuario" },
       // { rotulo: "LinkedIn", url: "https://www.linkedin.com/in/seu-perfil" }
-    ]
+    ],
   },
 
   /* ---------- DISCIPLINAS ----------
      "semanas" define quantas pastas semanais cada disciplina terá.
      Total: 28 + 28 + 28 + 26 = 110 pastas. */
   disciplinas: [
-    { id: "frontend",       nome: "Front-end",      semanas: 28, descricao: "Interfaces, HTML, CSS e JavaScript." },
-    { id: "backend",        nome: "Back-end",       semanas: 28, descricao: "Lógica de servidor e aplicações." },
-    { id: "banco-de-dados", nome: "Banco de Dados", semanas: 28, descricao: "Modelagem, consultas e armazenamento." },
-    { id: "versionamento",  nome: "Versionamento",  semanas: 26, descricao: "Git, GitHub e controle de versões." }
+    {
+      id: "frontend",
+      nome: "Front-end",
+      semanas: 28,
+      descricao: "Interfaces, HTML, CSS e JavaScript.",
+    },
+    {
+      id: "backend",
+      nome: "Back-end",
+      semanas: 28,
+      descricao: "Lógica de servidor e aplicações.",
+    },
+    {
+      id: "banco-de-dados",
+      nome: "Banco de Dados",
+      semanas: 28,
+      descricao: "Modelagem, consultas e armazenamento.",
+    },
+    {
+      id: "versionamento",
+      nome: "Versionamento",
+      semanas: 26,
+      descricao: "Git, GitHub e controle de versões.",
+    },
   ],
 
   /* ---------- ATIVIDADES POR SEMANA ----------
@@ -69,8 +102,7 @@ window.PORTFOLIO = {
        ]
      },
   */
-  atividades: [
-  ],
+  atividades: [],
 
   /* ---------- LINHA DO TEMPO (Meu Progresso › Minha trajetória) ----------
      Os marcos são ordenados pelo campo "data" (AAAA-MM ou AAAA). Modelo:
@@ -85,8 +117,7 @@ window.PORTFOLIO = {
        evidencia: { rotulo: "Ver projeto", url: "#/projetos" }   // opcional (interno ou externo)
      },
   */
-  trajetoria: [
-  ],
+  trajetoria: [],
 
   /* ---------- OBJETIVOS E METAS ----------
      prazo: "curto" | "medio" | "longo"
@@ -107,8 +138,7 @@ window.PORTFOLIO = {
        relacionado: { rotulo: "Ver atividades", url: "#/atividades/frontend" }  // opcional
      },
   */
-  metas: [
-  ],
+  metas: [],
 
   /* ---------- CONQUISTAS ----------
      Apenas conquistas reais. Modelo:
@@ -120,8 +150,7 @@ window.PORTFOLIO = {
        evidencia: { rotulo: "Ver projeto", url: "#/projetos" }   // recomendado
      },
   */
-  conquistas: [
-  ],
+  conquistas: [],
 
   /* ---------- PRÓXIMOS PASSOS ----------
      prioridade: "alta" | "media" | "baixa"
@@ -135,8 +164,7 @@ window.PORTFOLIO = {
        proximaEtapa: "O primeiro passo concreto."
      },
   */
-  proximosPassos: [
-  ],
+  proximosPassos: [],
 
   /* ---------- EXPERIÊNCIAS ----------
      Todos os campos são opcionais, exceto "organizacao". Campos vazios não aparecem. Modelo:
@@ -154,8 +182,7 @@ window.PORTFOLIO = {
        links: [ { rotulo: "Documento", url: "https://..." } ]
      },
   */
-  experiencias: [
-  ],
+  experiencias: [],
 
   /* ---------- PROJETOS ----------
      Trabalhos importantes feitos à parte das disciplinas semanais (TCC, projetos
@@ -176,9 +203,10 @@ window.PORTFOLIO = {
   projetos: [
     {
       nome: "IA Finance — TCC",
-      descricao: "Aplicação web de finanças pessoais desenvolvida como TCC. Texto provisório: edite este resumo com os objetivos e o resultado do projeto.",
+      descricao:
+        "Aplicação web de finanças pessoais desenvolvida como TCC. Texto provisório: edite este resumo com os objetivos e o resultado do projeto.",
       tecnologias: [],
-      imagem: "assets/imagens/ia-finance.png"
-    }
-  ]
+      imagem: "assets/imagens/ia-finance.png",
+    },
+  ],
 };
