@@ -1,5 +1,5 @@
 CERTIFICADOS
-
+ce
 Coloque aqui seus certificados (PDF, PNG ou JPG). O nome do arquivo vira o titulo
 (ex.: "Curso de HTML - Alura.pdf" aparece como "Curso de HTML - Alura").
 Depois rode atualizar-atividades.bat (ou python atualizar-atividades.py).

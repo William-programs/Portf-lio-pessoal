@@ -5,6 +5,7 @@
 
   var D = window.PORTFOLIO;
   var P = D.perfil;
+  var C = window.PORTFOLIO_CONFIG || { contato: {}, atividades: [] };
   var app = document.getElementById("conteudo");
 
   /* ---------- utilitários ---------- */
@@ -43,37 +44,6 @@
   var ICONE_SETA =
     '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
 
-  function disciplina(id) {
-    return D.disciplinas.filter(function (d) {
-      return d.id === id;
-    })[0];
-  }
-  function dadosSemana(discId, n) {
-    return D.atividades.filter(function (a) {
-      return a.disciplina === discId && a.semana === n;
-    })[0];
-  }
-  // Arquivos colocados em assets/atividades/<disciplina>/semana-NN/ (gerado por atualizar-atividades.py)
-  function arquivosAuto(discId, n) {
-    return (window.ARQUIVOS_AUTO || {})[discId + "/" + n] || [];
-  }
-  function temConteudo(discId, n) {
-    var s = dadosSemana(discId, n);
-    return (
-      !!(s && (s.descricao || (s.atividades && s.atividades.length))) ||
-      arquivosAuto(discId, n).length > 0
-    );
-  }
-  function totalSemanas() {
-    return D.disciplinas.reduce(function (t, d) {
-      return t + d.semanas;
-    }, 0);
-  }
-  function semanasPreenchidas(d) {
-    var c = 0;
-    for (var i = 1; i <= d.semanas; i++) if (temConteudo(d.id, i)) c++;
-    return c;
-  }
   function paragrafos(lista) {
     return (lista || []).map(function (t) {
       return h("p", { text: t });
@@ -421,158 +391,6 @@
     } catch (e) {
       return u;
     }
-  }
-
-  function cartaoSite(a) {
-    var titulo = (a.nome || "Projeto")
-      .replace(/\/?\s*\(projeto web\)\s*$/i, "")
-      .replace(/\/$/, "");
-    var previa = h("div", { class: "site-previa" });
-    if (a.previa) {
-      var im = h("img", {
-        src: a.previa,
-        alt: "Prévia do projeto " + titulo,
-        loading: "lazy",
-      });
-      im.addEventListener("error", function () {
-        im.remove();
-        previa.append(h("span", { text: "Prévia indisponível" }));
-      });
-      previa.append(im);
-    } else {
-      previa.append(h("span", { text: "Sem prévia" }));
-      previa.append(
-        h("small", {
-          text: "Coloque um print chamado preview.png dentro da pasta do site",
-        }),
-      );
-    }
-    return h(
-      "article",
-      { class: "site-cartao" },
-      h(
-        "a",
-        {
-          class: "site-previa__link",
-          href: a.url,
-          target: "_blank",
-          rel: "noopener noreferrer",
-          "aria-label": "Abrir o projeto " + titulo,
-        },
-        previa,
-      ),
-      h(
-        "div",
-        { class: "site-cartao__corpo" },
-        h("h3", { text: titulo }),
-        h("a", {
-          class: "btn",
-          href: a.url,
-          target: "_blank",
-          rel: "noopener noreferrer",
-          text: "Abrir o site",
-        }),
-      ),
-    );
-  }
-
-  function linhaArquivo(a) {
-    var nome = a.nome || a.rotulo || a.url;
-    var ehPdf = /\.pdf$/i.test(a.url);
-    var quadro = null;
-    var botoes = [];
-    if (ehPdf) {
-      var aberto = false;
-      var btn = h("button", {
-        class: "btn btn--ghost",
-        type: "button",
-        "aria-expanded": "false",
-        text: "Ver prévia",
-      });
-      btn.addEventListener("click", function () {
-        aberto = !aberto;
-        btn.textContent = aberto ? "Fechar prévia" : "Ver prévia";
-        btn.setAttribute("aria-expanded", aberto ? "true" : "false");
-        if (aberto && !quadro.firstChild)
-          quadro.append(
-            h("iframe", {
-              src: a.url,
-              title: "Prévia de " + nome,
-              loading: "lazy",
-            }),
-          );
-        quadro.hidden = !aberto;
-      });
-      botoes.push(btn);
-      quadro = h("div", { class: "arquivo__quadro", hidden: "hidden" });
-    }
-    if (EXT_ABRIR.test(a.url))
-      botoes.push(
-        h("a", {
-          class: "btn btn--ghost",
-          href: a.url,
-          target: "_blank",
-          rel: "noopener noreferrer",
-          text: "Abrir",
-        }),
-      );
-    botoes.push(
-      h("a", {
-        class: "btn btn--ghost",
-        href: a.url,
-        download: "",
-        text: "Baixar",
-      }),
-    );
-    return h(
-      "li",
-      { class: "arquivo" },
-      h("span", { class: "chip", text: extensao(a.url) }),
-      h("span", { class: "arquivo__nome", text: nome }),
-      h("span", { class: "arquivo__acoes" }, botoes),
-      quadro,
-    );
-  }
-
-  function blocoArquivos(lista) {
-    if (!lista || !lista.length) return null;
-    var sites = lista.filter(function (a) {
-      return a.tipo === "projeto";
-    });
-    var imagens = lista.filter(function (a) {
-      return a.tipo !== "projeto" && EXT_IMG.test(a.url);
-    });
-    var outros = lista.filter(function (a) {
-      return a.tipo !== "projeto" && !EXT_IMG.test(a.url);
-    });
-    return h(
-      "div",
-      { class: "arquivos" },
-      sites.length ? h("div", { class: "sites" }, sites.map(cartaoSite)) : null,
-      imagens.length
-        ? h(
-            "div",
-            { class: "galeria" },
-            imagens.map(function (a) {
-              var nome = a.nome || a.rotulo || "Imagem";
-              return h(
-                "a",
-                {
-                  href: a.url,
-                  target: "_blank",
-                  rel: "noopener noreferrer",
-                  title: "Abrir imagem",
-                },
-                h("img", { src: a.url, alt: a.alt || nome, loading: "lazy" }),
-                h("span", { text: nome }),
-              );
-            }),
-          )
-        : null,
-      outros.length
-        ? h("ul", { class: "arquivos__lista" }, outros.map(linhaArquivo))
-        : null,
-    );
   }
 
   // Certificados cadastrados em js/certificados.js + arquivos soltos em assets/certificados/
@@ -1033,7 +851,7 @@
               h("a", {
                 class: "btn btn--ghost",
                 href: "#/atividades",
-                text: "Ver atividades por disciplina",
+                text: "Ver atividades",
               }),
             ),
           ),
@@ -1436,22 +1254,66 @@
     ];
   }
 
-  function cardDisciplina(d) {
-    var pre = semanasPreenchidas(d);
+  /* ---------- Atividades (botão para o GitHub) ---------- */
+  var ICONE_GITHUB =
+    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>';
+  var ICONE_EMAIL =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>';
+  var ICONE_TELEFONE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.8 4.5-2.2 1.4a11 11 0 0 0 5 5l1.4-2.2L19 14.5V18a1.5 1.5 0 0 1-1.6 1.5A14.5 14.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg>';
+  var ICONE_LINKEDIN =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V16M8 7.8v.1M12 16v-5.5M12 13a2.5 2.5 0 0 1 5 0v3"/></svg>';
+  var ICONE_SETA_DIR =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+  function cartaoFonte(f, destaque) {
+    var ativo = !!f.url;
+    var chips =
+      f.areas && f.areas.length
+        ? h(
+            "ul",
+            { class: "chips", "aria-label": "Áreas" },
+            f.areas.map(function (a) {
+              return h("li", { class: "chip", text: a });
+            }),
+          )
+        : null;
     return h(
-      "a",
-      { class: "pasta pasta-disciplina", href: "#/atividades/" + d.id },
-      svg(ICONE_PASTA, "pasta__icone"),
-      h("span", { class: "pasta__titulo", text: d.nome }),
-      h("span", { class: "pasta__meta", text: d.descricao }),
-      h("span", {
-        class: "selo" + (pre ? "" : " selo--breve"),
-        text: d.semanas + " semanas · " + pre + " com conteúdo",
-      }),
+      "article",
+      {
+        class:
+          "fonte" +
+          (ativo ? " fonte--ativa" : " fonte--breve") +
+          (destaque ? " fonte--destaque" : ""),
+      },
+      h(
+        "div",
+        { class: "fonte__cab" },
+        svg(ativo ? ICONE_GITHUB : ICONE_PASTA, "fonte__icone"),
+        f.status ? selo(f.status) : null,
+      ),
+      h("h2", { text: f.titulo }),
+      f.descricao ? h("p", { text: f.descricao }) : null,
+      chips,
+      ativo
+        ? h(
+            "a",
+            {
+              class: "btn btn--grande btn--github",
+              href: f.url,
+              target: "_blank",
+              rel: "noopener noreferrer",
+            },
+            f.rotulo || "Ver atividades no GitHub",
+            svg(ICONE_SETA_DIR, "btn__seta"),
+            h("span", { class: "sr-only", text: " (abre em uma nova aba)" }),
+          )
+        : null,
     );
   }
 
   function paginaAtividades() {
+    var fontes = C.atividades || [];
     return [
       breadcrumb([{ rotulo: "Início", href: "#/" }, { rotulo: "Atividades" }]),
       h(
@@ -1459,7 +1321,7 @@
         { class: "container titulo-pagina" },
         h("h1", { text: "Atividades" }),
         h("p", {
-          text: "Escolha uma disciplina para ver as pastas semanais, da primeira à última semana.",
+          text: "Minhas atividades ficam organizadas em pastas no GitHub. Escolha abaixo para acessar o repositório.",
         }),
       ),
       h(
@@ -1468,231 +1330,96 @@
         h(
           "div",
           { class: "container" },
-          h(
-            "ul",
-            { class: "grade grade--grande" },
-            D.disciplinas.map(function (d) {
-              return h("li", null, cardDisciplina(d));
-            }),
-          ),
+          fontes.length
+            ? h(
+                "div",
+                { class: "fontes" },
+                fontes.map(function (f, i) {
+                  return cartaoFonte(f, i === 0);
+                }),
+              )
+            : vazioEditavel(
+                "Nenhuma atividade configurada. Adicione em js/config.js (atividades).",
+              ),
         ),
       ),
     ];
   }
 
-  function paginaDisciplina(d) {
+  /* ---------- Contato (faixa no rodapé) ---------- */
+  function formatarTelefone(n) {
+    var d = String(n || "").replace(/\D/g, "");
+    if (d.length === 11)
+      return "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7);
+    if (d.length === 10)
+      return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
+    return n;
+  }
+
+  function rodapeContato() {
+    var c = C.contato || {};
     var itens = [];
-    for (var i = 1; i <= d.semanas; i++) itens.push(i);
-    return [
-      breadcrumb([
-        { rotulo: "Início", href: "#/" },
-        { rotulo: "Atividades", href: "#/atividades" },
-        { rotulo: d.nome },
-      ]),
-      h(
-        "section",
-        { class: "container titulo-pagina" },
-        h("h1", { text: d.nome }),
-        h("p", { text: d.descricao + " " + d.semanas + " pastas semanais." }),
-      ),
-      h(
-        "section",
-        { class: "secao" },
+    function destaque(icone, rotulo, url, dica) {
+      return h(
+        "li",
+        null,
         h(
-          "div",
-          { class: "container" },
-          h(
-            "ul",
-            { class: "grade" },
-            itens.map(function (n) {
-              var cheio = temConteudo(d.id, n);
-              var s = dadosSemana(d.id, n);
-              var qtd =
-                (s && s.atividades ? s.atividades.length : 0) +
-                arquivosAuto(d.id, n).length;
-              return h(
-                "li",
-                null,
-                h(
-                  "a",
-                  {
-                    class: "pasta" + (cheio ? "" : " pasta--vazia"),
-                    href: "#/atividades/" + d.id + "/" + n,
-                    "aria-label":
-                      d.nome +
-                      " — Semana " +
-                      n +
-                      (cheio ? "" : " (conteúdo em breve)"),
-                  },
-                  svg(ICONE_PASTA, "pasta__icone"),
-                  h("span", {
-                    class: "pasta__titulo",
-                    text: d.nome + " — Semana " + n,
-                  }),
-                  h("span", {
-                    class: "selo" + (cheio ? "" : " selo--breve"),
-                    text: cheio
-                      ? qtd
-                        ? qtd + (qtd === 1 ? " item" : " itens")
-                        : "Com conteúdo"
-                      : "Conteúdo em breve",
-                  }),
-                ),
-              );
-            }),
-          ),
-        ),
-      ),
-    ];
-  }
-
-  function paginaSemana(d, n) {
-    var s = dadosSemana(d.id, n);
-    var cheio = temConteudo(d.id, n);
-    var corpo = [];
-
-    if (s && s.descricao) {
-      corpo.push(
-        h(
-          "div",
-          { class: "bloco", style: "margin-bottom:18px" },
-          h("h3", { text: "Conteúdo estudado" }),
-          h("p", { text: s.descricao }),
+          "a",
+          {
+            class: "brilho",
+            href: url,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            title: dica + " (abre em nova aba)",
+          },
+          svg(icone),
+          h("span", { text: rotulo }),
         ),
       );
     }
-
-    if (s && s.atividades && s.atividades.length) {
-      corpo.push(h("h2", { text: "Atividades realizadas" }));
-      s.atividades.forEach(function (a) {
-        var im = null;
-        if (a.imagem) {
-          im = h("img", {
-            src: a.imagem,
-            alt: a.imagemAlt || "Captura de tela: " + a.titulo,
-            loading: "lazy",
-          });
-          im.addEventListener("error", function () {
-            im.remove();
-          });
-        }
-        corpo.push(
-          h(
-            "article",
-            { class: "atividade" },
-            h("h3", { text: a.titulo }),
-            a.descricao ? h("p", { text: a.descricao }) : null,
-            im,
-            a.codigo
-              ? h(
-                  "pre",
-                  {
-                    class: "codigo",
-                    tabindex: "0",
-                    "aria-label": "Trecho de código",
-                  },
-                  h("code", { text: a.codigo.texto }),
-                )
-              : null,
-            blocoArquivos(a.arquivos),
-            h(
-              "div",
-              { class: "projeto__acoes" },
-              a.demo
-                ? h("a", {
-                    class: "btn",
-                    href: a.demo,
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                    text: "Ver demonstração",
-                  })
-                : null,
-              a.github
-                ? h("a", {
-                    class: "btn btn--ghost",
-                    href: a.github,
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                    text: "Repositório no GitHub",
-                  })
-                : null,
-            ),
-          ),
-        );
-      });
-    }
-
-    var auto = arquivosAuto(d.id, n);
-    if (auto.length) {
-      corpo.push(
-        h("h2", {
-          text: "Arquivos desta semana",
-          style: corpo.length ? "margin-top:1.5rem" : null,
-        }),
+    function texto(icone, rotulo, valor) {
+      return h(
+        "li",
+        { class: "rodape__texto" },
+        svg(icone),
+        h("span", { class: "rodape__rotulo", text: rotulo }),
+        h("strong", { text: valor }),
       );
-      corpo.push(blocoArquivos(auto));
     }
-
-    if (!cheio) {
-      corpo.push(
-        h(
-          "div",
-          { class: "vazio" },
-          h("p", {
-            text: "Conteúdo em breve",
-            style: "font-size:1.2rem;color:var(--text)",
-          }),
-          h("p", { text: "Esta pasta ainda não tem atividades cadastradas." }),
+    if (c.linkedin)
+      itens.push(
+        destaque(
+          ICONE_LINKEDIN,
+          "Meu LinkedIn",
+          c.linkedin,
+          "Abrir meu perfil no LinkedIn",
         ),
       );
-    }
-
-    var nav = h(
+    if (c.github)
+      itens.push(
+        destaque(
+          ICONE_GITHUB,
+          "Meu GitHub",
+          c.github,
+          "Abrir meu perfil no GitHub",
+        ),
+      );
+    if (c.email) itens.push(texto(ICONE_EMAIL, "E-mail:", c.email));
+    if (c.telefone)
+      itens.push(
+        texto(ICONE_TELEFONE, "Telefone:", formatarTelefone(c.telefone)),
+      );
+    if (!itens.length) return null;
+    return h(
       "div",
-      { class: "navegacao-semana" },
-      h("a", {
-        class: "btn btn--ghost",
-        href: "#/atividades/" + d.id,
-        text: "← Voltar para as semanas",
-      }),
-      h(
-        "span",
-        { style: "display:flex;gap:10px;flex-wrap:wrap" },
-        n > 1
-          ? h("a", {
-              class: "btn btn--ghost",
-              href: "#/atividades/" + d.id + "/" + (n - 1),
-              text: "← Semana " + (n - 1),
-            })
-          : null,
-        n < d.semanas
-          ? h("a", {
-              class: "btn",
-              href: "#/atividades/" + d.id + "/" + (n + 1),
-              text: "Semana " + (n + 1) + " →",
-            })
-          : null,
-      ),
+      {
+        class: "rodape__contato",
+        role: "group",
+        "aria-label": "Onde me encontrar",
+      },
+      h("p", { class: "rodape__titulo", text: "Onde me encontrar" }),
+      h("ul", { class: "rodape__lista" }, itens),
     );
-
-    return [
-      breadcrumb([
-        { rotulo: "Início", href: "#/" },
-        { rotulo: "Atividades", href: "#/atividades" },
-        { rotulo: d.nome, href: "#/atividades/" + d.id },
-        { rotulo: "Semana " + n },
-      ]),
-      h(
-        "section",
-        { class: "container titulo-pagina" },
-        h("h1", { text: d.nome + " — Semana " + n }),
-      ),
-      h(
-        "section",
-        { class: "secao" },
-        h("div", { class: "container" }, corpo, nav),
-      ),
-    ];
   }
 
   function paginaProjetos() {
@@ -1704,7 +1431,7 @@
         { class: "container titulo-pagina" },
         h("h1", { text: "Projetos" }),
         h("p", {
-          text: "Trabalhos importantes que desenvolvi, como o TCC e outras atividades feitas à parte das disciplinas semanais.",
+          text: "Trabalhos importantes que desenvolvi, como o TCC e outras atividades feitas à parte das atividades do curso.",
         }),
       ),
       h(
@@ -1772,25 +1499,8 @@
       conteudo = paginaExperiencia();
       titulo = "Experiência";
     } else if (secao === "atividades") {
-      var d = p[1] && disciplina(p[1]);
-      if (!p[1]) {
-        conteudo = paginaAtividades();
-        titulo = "Atividades";
-      } else if (!d) {
-        conteudo = pagina404();
-        secao = "";
-      } else if (!p[2]) {
-        conteudo = paginaDisciplina(d);
-        titulo = d.nome;
-      } else {
-        var n = parseInt(p[2], 10);
-        if (!(n >= 1 && n <= d.semanas) || String(n) !== p[2]) {
-          conteudo = pagina404();
-        } else {
-          conteudo = paginaSemana(d, n);
-          titulo = d.nome + " — Semana " + n;
-        }
-      }
+      conteudo = paginaAtividades();
+      titulo = "Atividades";
     } else {
       conteudo = pagina404();
       secao = "";
@@ -1845,6 +1555,16 @@
       box.textContent = (P.nome || "?").charAt(0).toUpperCase();
     });
     box.append(img);
+  })();
+  (function rodape() {
+    var bloco = rodapeContato();
+    if (bloco)
+      document
+        .getElementById("rodape-texto")
+        .parentNode.insertBefore(
+          bloco,
+          document.getElementById("rodape-texto"),
+        );
   })();
   document.getElementById("rodape-texto").textContent =
     "© " +
